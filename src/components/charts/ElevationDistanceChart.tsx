@@ -58,15 +58,6 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
     );
   }, [track1]);
 
-  const stops2 = useMemo(() => {
-    if (!track2) return [];
-    return computeGradientStops(
-      track2.points.map(p => p.distKm),
-      track2.points.map(p => p.gradientPct),
-      track2.totalDistKm
-    );
-  }, [track2]);
-
   const lastIndex1 = useMemo(
     () => data.reduceRight((acc, d, i) => acc === -1 && d.ele1 != null ? i : acc, -1),
     [data]
@@ -115,13 +106,6 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
             {track1 && stops1.length > 0 && (
               <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
                 {stops1.map((s, i) => (
-                  <stop key={i} offset={s.offset} stopColor={s.color} />
-                ))}
-              </linearGradient>
-            )}
-            {track2 && stops2.length > 0 && (
-              <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                {stops2.map((s, i) => (
                   <stop key={i} offset={s.offset} stopColor={s.color} />
                 ))}
               </linearGradient>
@@ -177,7 +161,7 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
             <Line
               dataKey="ele2"
               name={track2.fileName}
-              stroke={stops2.length > 0 ? 'url(#grad2)' : TRACK_COLORS.track2}
+              stroke={TRACK_COLORS.track2}
               strokeWidth={3}
               strokeDasharray="10 6"
               dot={(props) => (
