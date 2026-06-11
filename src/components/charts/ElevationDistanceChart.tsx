@@ -99,6 +99,7 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
               stroke={stops1.length > 0 ? 'url(#grad1)' : TRACK_COLORS.track1}
               strokeWidth={3}
               dot={false}
+              isAnimationActive={false}
               connectNulls
             />
           )}
@@ -110,6 +111,7 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
               strokeWidth={3}
               strokeDasharray="10 6"
               dot={false}
+              isAnimationActive={false}
               connectNulls
             />
           )}
