@@ -14,40 +14,6 @@ interface Props {
   track2: GpxTrack | null;
 }
 
-interface EndDotProps {
-  cx?: number;
-  cy?: number;
-  index?: number;
-  lastIndex: number;
-  color: string;
-  label: string;
-  alignRight?: boolean;
-}
-
-function EndDot({ cx, cy, index, lastIndex, color, label, alignRight }: EndDotProps) {
-  if (index !== lastIndex || cx == null || cy == null) return null;
-  const maxLen = 16;
-  const text = label.length > maxLen ? label.slice(0, maxLen - 1) + '…' : label;
-  const anchor = alignRight ? 'end' : 'start';
-  const xOffset = alignRight ? -8 : 8;
-  return (
-    <g>
-      <circle cx={cx} cy={cy} r={4} fill={color} stroke="white" strokeWidth={1.5} />
-      <text
-        x={cx + xOffset}
-        y={cy + 4}
-        textAnchor={anchor}
-        fontSize={10}
-        fontWeight="600"
-        fill={color}
-        style={{ pointerEvents: 'none' }}
-      >
-        {text}
-      </text>
-    </g>
-  );
-}
-
 export function ElevationDistanceChart({ data, track1, track2 }: Props) {
   const stops1 = useMemo(() => {
     if (!track1) return [];
@@ -57,18 +23,6 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
       track1.totalDistKm
     );
   }, [track1]);
-
-  const lastIndex1 = useMemo(
-    () => data.reduceRight((acc, d, i) => acc === -1 && d.ele1 != null ? i : acc, -1),
-    [data]
-  );
-  const lastIndex2 = useMemo(
-    () => data.reduceRight((acc, d, i) => acc === -1 && d.ele2 != null ? i : acc, -1),
-    [data]
-  );
-
-  // track2 ends later → align track1 label to right to avoid overlap
-  const track1AlignRight = lastIndex1 >= lastIndex2;
 
   return (
     <ChartContainer
@@ -144,16 +98,7 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
               name={track1.fileName}
               stroke={stops1.length > 0 ? 'url(#grad1)' : TRACK_COLORS.track1}
               strokeWidth={3}
-              dot={(props) => (
-                <EndDot
-                  key={props.index}
-                  {...props}
-                  lastIndex={lastIndex1}
-                  color={TRACK_COLORS.track1}
-                  label={track1.fileName}
-                  alignRight={track1AlignRight}
-                />
-              )}
+              dot={false}
               connectNulls
             />
           )}
@@ -164,16 +109,7 @@ export function ElevationDistanceChart({ data, track1, track2 }: Props) {
               stroke={TRACK_COLORS.track2}
               strokeWidth={3}
               strokeDasharray="10 6"
-              dot={(props) => (
-                <EndDot
-                  key={props.index}
-                  {...props}
-                  lastIndex={lastIndex2}
-                  color={TRACK_COLORS.track2}
-                  label={track2.fileName}
-                  alignRight={!track1AlignRight}
-                />
-              )}
+              dot={false}
               connectNulls
             />
           )}
